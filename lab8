@@ -1,0 +1,126 @@
+import { useState } from "react";
+import './index.css';
+
+export default function App() {
+  const [tasks, setTasks] = useState([]);
+  const [f, setF] = useState({ name: "", date: "", desc: "" });
+  const [filter, setFilter] = useState("all");
+
+  const add = (e) => {
+    e.preventDefault();
+    if (f.name && f.date) {
+      setTasks([...tasks, { ...f, done: false }]);
+      setF({ name: "", date: "", desc: "" });
+    }
+  };
+
+  const toggle = (i) =>
+    setTasks(tasks.map((t, j) => j === i ? { ...t, done: !t.done } : t));
+
+  return (
+    <div>
+      <h1>Reminder App</h1>
+
+      <form onSubmit={add}>
+        {["name", "date", "desc"].map(k => (
+          <input
+            key={k}
+            type={k === "date" ? "date" : "text"}
+            placeholder={k}
+            value={f[k]}
+            onChange={e => setF({ ...f, [k]: e.target.value })}
+          />
+        ))}
+        <button>Add</button>
+      </form>
+
+      <div>
+        {["all", "done", "notdone"].map(v => (
+          <button key={v} onClick={() => setFilter(v)}>{v}</button>
+        ))}
+      </div>
+
+      <ul>
+        {tasks
+          .filter(t => filter === "all" || (filter === "done") === t.done)
+          .map((t, i) => (
+            <li key={i} onClick={() => toggle(i)}>
+              <b>{t.name}</b> - {t.date} {t.desc}
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  margin: 0;
+}
+
+.app {
+  width: 350px;
+  margin: 50px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* inputs */
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* add button */
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #4da6ff;
+  color: white;
+  cursor: pointer;
+}
+
+/* filter buttons */
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.filters button {
+  width: 30%;
+  background: #e5e7eb;
+  color: black;
+}
+
+/* list */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 8px;
+  margin: 5px 0;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+/* done task */
+.done {
+  text-decoration: line-through;
+  color: gray;
+}
