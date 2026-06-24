@@ -1,0 +1,78 @@
+import {useState} from "react";
+import BasicFigure from "./BasicFigure";
+import "./FigureList.css";
+const initialImgs=[
+    {src:"https://tse4.mm.bing.net/th/id/OIP.4gTk5iT6ntvRc0GD5E5VEQHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" ,caption:"img1"},
+     {src:"https://tse3.mm.bing.net/th/id/OIP.EsuK8jghWjoX70CCMbt_sgHaEJ?rs=1&pid=ImgDetMain&o=7&rm=3" ,caption:"img2"},
+      {src:"https://tse3.mm.bing.net/th/id/OIP.56Pj6weupYxr5W2rGwbtHwHaE8?rs=1&pid=ImgDetMain&o=7&rm=3", caption:"img3"}
+];
+const FigureList=()=>{
+    const[images,setImages]=useState(initialImgs);
+
+const addImage=()=>{
+    const randomId=Math.floor(Math.random()*1000);
+    const newImage={
+        src:`https://picsum.photos/300/400?random=$(randomId)`,
+        caption:`image ${images.length+1}`
+    };
+    setImages([...images,newImage]);
+};
+const removeImage=(i)=>{
+    setImages(images.filter((_,index)=> index !== i));
+};
+return(
+<div className="container">
+    <h1>Dynamic img Gallery</h1>
+    <div className="buttons">
+        <button onClick={addImage}>Add Img</button>
+    </div>
+    <div className="Gallery">
+        {images.map((images,i)=> (
+        <BasicFigure key={i} src={images.src} caption={images.caption} onRemove={()=>removeImage(i)}/>       
+        ))}
+    </div>
+</div>
+);
+};
+export default FigureList;
+const BasicFigure=({src,caption,onRemove})=>{
+return (
+    <div className="image-card">
+        <img src={src} alt="Gallery"/>
+        <div className="caption">{caption}</div>
+        <button onClick={onRemove}>Remove</button>
+    </div>
+);};
+export default BasicFigure;
+import FigureList from "./FigureList";
+function App(){
+  return(
+    <div>
+      <FigureList />
+    </div>
+  );
+};
+export default App;
+.container {
+text-align: center;
+padding: 20px;
+}
+
+.buttons {
+margin-bottom: 20px;
+}
+
+button {
+margin: 5px;
+padding: 10px 15px;
+cursor: pointer;
+background-color: green;
+color: white;
+}
+
+.gallery {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 15px;
+}
